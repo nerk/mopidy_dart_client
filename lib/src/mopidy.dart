@@ -81,7 +81,8 @@ class Mopidy extends EventManager {
   Stream<Uri> get playlistDeleted$ => _playlistDeleted$.stream;
   Stream<void> get tracklistChanged$ => _tracklistChanged$.stream;
   Stream<TrackPlaybackInfo> get trackPlayback$ => _trackPlayback$.stream;
-  Stream<PlaybackState> get playbackStateChanged$ => _playbackStateChanged$.stream;
+  Stream<PlaybackState> get playbackStateChanged$ =>
+      _playbackStateChanged$.stream;
   Stream<int> get volumeChanged$ => _volumeChanged$.stream;
   Stream<bool> get muteChanged$ => _muteChanged$.stream;
   Stream<int> get seeked$ => _seeked$.stream;
@@ -169,22 +170,25 @@ class Mopidy extends EventManager {
     return _mixer;
   }
 
-  /// Manages the tracklist.
+  /// Manages everything related to the list of tracks we will play. See
+  /// [TracklistController]. Undefined before Mopidy connects.
   TracklistController get tracklist {
     return _tracklist;
   }
 
   /// Methods to browse and search media libraries.
+  /// See [LibraryController].
   LibraryController get library {
     return _library;
   }
 
   /// Management of playlists.
+  /// See [PlaylistsController].
   PlaylistsController get playlists {
     return _playlists;
   }
 
-  /// Access to the history of played tracks.
+  /// Access to the history of played tracks. See [HistoryController].
   HistoryController get history {
     return _history;
   }
@@ -199,7 +203,10 @@ class Mopidy extends EventManager {
     await channel.ready;
     _webSocketChannelSubscription = channel.stream.listen((message) {
       _event("websocket:incomingMessage", message);
-    }, onError: (err) => _event("websocket:error", err), onDone: () => _event("websocket:close"), cancelOnError: false);
+    },
+        onError: (err) => _event("websocket:error", err),
+        onDone: () => _event("websocket:close"),
+        cancelOnError: false);
     _webSocketChannel = channel;
     _event("websocket:open");
     return Future.value(true);
@@ -256,7 +263,8 @@ class Mopidy extends EventManager {
       Completer<dynamic>? cmp = pendingRequests[key];
 
       if (!cmp!.isCompleted) {
-        cmp.completeError(MopidyException.connectionException(ConnectionException.errorSocketClosed, "WebSocket closed"));
+        cmp.completeError(MopidyException.connectionException(
+            ConnectionException.errorSocketClosed, "WebSocket closed"));
       }
     });
 
@@ -314,16 +322,19 @@ class Mopidy extends EventManager {
 
   void _handleMessage(Event ev, Object? obj) {
     try {
-      Map<String, dynamic> data = Map<String, dynamic>.from(json.decode(ev.eventData.toString()));
+      Map<String, dynamic> data =
+          Map<String, dynamic>.from(json.decode(ev.eventData.toString()));
       if (data.containsKey('id')) {
         _handleResponse(data);
       } else if (data.containsKey('event')) {
         _handleEvent(data);
       } else {
-        logger.e("Unknown message type received. Message was: ${ev.eventData.toString()}");
+        logger.e(
+            "Unknown message type received. Message was: ${ev.eventData.toString()}");
       }
     } on FormatException {
-      logger.e("WebSocket message parsing failed. Message was: ${ev.eventData.toString()}");
+      logger.e(
+          "WebSocket message parsing failed. Message was: ${ev.eventData.toString()}");
     }
   }
 
@@ -346,14 +357,19 @@ class Mopidy extends EventManager {
       try {
         cmp.complete(Model.convert(responseMessage['result']));
       } catch (e, s) {
-        cmp.completeError(MopidyException.serverException(ServerException.errorServerResponse, "$e $s", []));
+        cmp.completeError(MopidyException.serverException(
+            ServerException.errorServerResponse, "$e $s", []));
       }
     } else if (responseMessage.containsKey('error')) {
       cmp.completeError(MopidyException.serverException(
-          ServerException.errorServerResponse, "Server response error: {}", [responseMessage['error']]));
+          ServerException.errorServerResponse,
+          "Server response error: {}",
+          [responseMessage['error']]));
     } else {
-      cmp.completeError(MopidyException.serverException(ServerException.errorUnexpectedResponse,
-          'Response without "result" or "error" received. Message was: {}', responseMessage));
+      cmp.completeError(MopidyException.serverException(
+          ServerException.errorUnexpectedResponse,
+          'Response without "result" or "error" received. Message was: {}',
+          responseMessage));
     }
   }
 

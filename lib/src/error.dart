@@ -39,10 +39,12 @@ abstract class MopidyException implements Exception {
 
   MopidyException({this.errorCode = errorUnknown, this.message = defaultMessage, this.arguments});
 
+  /// Creates a [ConnectionException]
   factory MopidyException.connectionException(errorCode, message, [arguments]) {
     return ConnectionException(errorCode, message, arguments);
   }
 
+  /// Creates a [ServerException]
   factory MopidyException.serverException(errorCode, message, [arguments]) {
     return ServerException(errorCode, message, arguments);
   }

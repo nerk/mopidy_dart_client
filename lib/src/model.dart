@@ -178,17 +178,26 @@ class Ref extends Model {
   Ref(this.uri, this.name, this.type);
 
   factory Ref.fromMap(Map<String, dynamic> jsonMap) {
-    return Ref(jsonMap[_JsonKeywords.uri], jsonMap[_JsonKeywords.name], jsonMap[_JsonKeywords.type]);
+    return Ref(jsonMap[_JsonKeywords.uri], jsonMap[_JsonKeywords.name],
+        jsonMap[_JsonKeywords.type]);
   }
 
   @override
   Map<String, dynamic> toMap() {
-    return _finish({_JsonKeywords.uri: uri, _JsonKeywords.name: name, _JsonKeywords.type: type});
+    return _finish({
+      _JsonKeywords.uri: uri,
+      _JsonKeywords.name: name,
+      _JsonKeywords.type: type
+    });
   }
 
   @override
   bool operator ==(Object other) =>
-      other is Ref && other.runtimeType == runtimeType && other.uri == uri && other.name == name && other.type == type;
+      other is Ref &&
+      other.runtimeType == runtimeType &&
+      other.uri == uri &&
+      other.name == name &&
+      other.type == type;
 
   @override
   int get hashCode => Object.hash(uri, name, type);
@@ -212,8 +221,8 @@ class Artist extends Model {
   Artist(this.uri, this.name, this.sortName, this.musicbrainzId);
 
   factory Artist.fromMap(Map<String, dynamic> jsonMap) {
-    return Artist(jsonMap[_JsonKeywords.uri], jsonMap[_JsonKeywords.name], jsonMap[_JsonKeywords.sortName],
-        jsonMap[_JsonKeywords.musicbrainzId]);
+    return Artist(jsonMap[_JsonKeywords.uri], jsonMap[_JsonKeywords.name],
+        jsonMap[_JsonKeywords.sortName], jsonMap[_JsonKeywords.musicbrainzId]);
   }
 
   @override
@@ -263,13 +272,15 @@ class Album extends Model {
   /// MusicBrainz ID
   final String? musicbrainzId;
 
-  Album(this.uri, this.name, this.artists, this.numTracks, this.numDiscs, this.date, this.musicbrainzId);
+  Album(this.uri, this.name, this.artists, this.numTracks, this.numDiscs,
+      this.date, this.musicbrainzId);
 
   factory Album.fromMap(Map<String, dynamic> jsonMap) {
     return Album(
         jsonMap[_JsonKeywords.uri],
         jsonMap[_JsonKeywords.name],
-        Model.convert(jsonMap[_JsonKeywords.artists])?.cast<Artist>() ?? <Artist>[],
+        Model.convert(jsonMap[_JsonKeywords.artists])?.cast<Artist>() ??
+            <Artist>[],
         jsonMap[_JsonKeywords.numTracks],
         jsonMap[_JsonKeywords.numDiscs],
         jsonMap[_JsonKeywords.date],
@@ -281,7 +292,9 @@ class Album extends Model {
     return _finish({
       _JsonKeywords.uri: uri,
       _JsonKeywords.name: name,
-      _JsonKeywords.artists: artists.isNotEmpty ? artists.map((artist) => artist.toMap()).toList() : null,
+      _JsonKeywords.artists: artists.isNotEmpty
+          ? artists.map((artist) => artist.toMap()).toList()
+          : null,
       _JsonKeywords.numTracks: numTracks,
       _JsonKeywords.numDiscs: numDiscs,
       _JsonKeywords.date: date,
@@ -302,7 +315,8 @@ class Album extends Model {
       other.musicbrainzId == musicbrainzId;
 
   @override
-  int get hashCode => Object.hash(uri, name, artists, numTracks, numDiscs, date, musicbrainzId);
+  int get hashCode =>
+      Object.hash(uri, name, artists, numTracks, numDiscs, date, musicbrainzId);
 }
 
 /// Image representing an album cover.
@@ -319,17 +333,26 @@ class Image extends Model {
   Image(this.uri, this.width, this.height);
 
   factory Image.fromMap(Map<String, dynamic> jsonMap) {
-    return Image(jsonMap[_JsonKeywords.uri], jsonMap[_JsonKeywords.width], jsonMap[_JsonKeywords.height]);
+    return Image(jsonMap[_JsonKeywords.uri], jsonMap[_JsonKeywords.width],
+        jsonMap[_JsonKeywords.height]);
   }
 
   @override
   Map<String, dynamic> toMap() {
-    return _finish({_JsonKeywords.uri: uri, _JsonKeywords.width: width, _JsonKeywords.height: height});
+    return _finish({
+      _JsonKeywords.uri: uri,
+      _JsonKeywords.width: width,
+      _JsonKeywords.height: height
+    });
   }
 
   @override
   bool operator ==(Object other) =>
-      other is Image && other.runtimeType == runtimeType && other.uri == uri && other.width == width && other.height == height;
+      other is Image &&
+      other.runtimeType == runtimeType &&
+      other.uri == uri &&
+      other.width == width &&
+      other.height == height;
 
   @override
   int get hashCode => Object.hash(uri, width, height);
@@ -382,8 +405,22 @@ class Track extends Model {
   /// Represents last modification time
   final int? lastModified;
 
-  Track(this.uri, this.name, this.artists, this.album, this.composers, this.performers, this.genre, this.trackNo, this.discNo,
-      this.date, this.length, this.bitrate, this.comment, this.musicbrainzId, this.lastModified);
+  Track(
+      this.uri,
+      this.name,
+      this.artists,
+      this.album,
+      this.composers,
+      this.performers,
+      this.genre,
+      this.trackNo,
+      this.discNo,
+      this.date,
+      this.length,
+      this.bitrate,
+      this.comment,
+      this.musicbrainzId,
+      this.lastModified);
 
   factory Track.fromMap(Map<String, dynamic> jsonMap) {
     return Track(
@@ -391,10 +428,13 @@ class Track extends Model {
         // Server returns a response with no name for invalid streams, because
         // Mopidy server treats this as a warning, not as an error. Insert INVALID_STREAM as a workaround.
         jsonMap[_JsonKeywords.name] ?? 'INVALID_STREAM_ERROR',
-        Model.convert(jsonMap[_JsonKeywords.artists])?.cast<Artist>() ?? <Artist>[],
+        Model.convert(jsonMap[_JsonKeywords.artists])?.cast<Artist>() ??
+            <Artist>[],
         Model.convert(jsonMap[_JsonKeywords.album]) as Album?,
-        Model.convert(jsonMap[_JsonKeywords.composers])?.cast<Artist>() ?? <Artist>[],
-        Model.convert(jsonMap[_JsonKeywords.performers])?.cast<Artist>() ?? <Artist>[],
+        Model.convert(jsonMap[_JsonKeywords.composers])?.cast<Artist>() ??
+            <Artist>[],
+        Model.convert(jsonMap[_JsonKeywords.performers])?.cast<Artist>() ??
+            <Artist>[],
         jsonMap[_JsonKeywords.genre] as String?,
         jsonMap[_JsonKeywords.trackNo] as int?,
         jsonMap[_JsonKeywords.discNo] as int?,
@@ -411,10 +451,16 @@ class Track extends Model {
     return _finish({
       _JsonKeywords.uri: uri,
       _JsonKeywords.name: name,
-      _JsonKeywords.artists: artists.isNotEmpty ? artists.map((artist) => artist.toMap()).toList() : null,
+      _JsonKeywords.artists: artists.isNotEmpty
+          ? artists.map((artist) => artist.toMap()).toList()
+          : null,
       _JsonKeywords.album: album?.toMap(),
-      _JsonKeywords.composers: composers.isNotEmpty ? composers.map((composer) => composer.toMap()).toList() : null,
-      _JsonKeywords.performers: performers.isNotEmpty ? performers.map((performer) => performer.toMap()).toList() : null,
+      _JsonKeywords.composers: composers.isNotEmpty
+          ? composers.map((composer) => composer.toMap()).toList()
+          : null,
+      _JsonKeywords.performers: performers.isNotEmpty
+          ? performers.map((performer) => performer.toMap()).toList()
+          : null,
       _JsonKeywords.genre: genre,
       _JsonKeywords.trackNo: trackNo,
       _JsonKeywords.discNo: discNo,
@@ -448,11 +494,28 @@ class Track extends Model {
       other.lastModified == lastModified;
 
   @override
-  int get hashCode => Object.hash(uri, name, artists, album, composers, performers, genre, trackNo, discNo, date, length, bitrate,
-      comment, musicbrainzId, lastModified);
+  int get hashCode => Object.hash(
+      uri,
+      name,
+      artists,
+      album,
+      composers,
+      performers,
+      genre,
+      trackNo,
+      discNo,
+      date,
+      length,
+      bitrate,
+      comment,
+      musicbrainzId,
+      lastModified);
 }
 
-/// A track on the tracklist.
+/// A tracklistt track. Wraps a regular track and it's tracklist ID.
+///
+/// The use of [TlTrack] allows the same track to appear multiple times in the
+/// tracklist.
 class TlTrack extends Model {
   /// Tracklist ID
   final int tlid;
@@ -463,7 +526,8 @@ class TlTrack extends Model {
   TlTrack(this.tlid, this.track);
 
   factory TlTrack.fromMap(Map<String, dynamic> jsonMap) {
-    return TlTrack(jsonMap[_JsonKeywords.tlId] as int, Track.fromMap(jsonMap[_JsonKeywords.track]));
+    return TlTrack(jsonMap[_JsonKeywords.tlId] as int,
+        Track.fromMap(jsonMap[_JsonKeywords.track]));
   }
 
   @override
@@ -473,7 +537,10 @@ class TlTrack extends Model {
 
   @override
   bool operator ==(Object other) =>
-      other is TlTrack && other.runtimeType == runtimeType && other.tlid == tlid && other.track == track;
+      other is TlTrack &&
+      other.runtimeType == runtimeType &&
+      other.tlid == tlid &&
+      other.track == track;
 
   @override
   int get hashCode => Object.hash(tlid, track);
@@ -484,8 +551,9 @@ class Playlist extends Model {
   /// Object URI
   final String uri;
 
-  /// Object name
-  final String name;
+  /// Object name. Since playlists may be renamed,
+  /// [name] is non-final.
+  String name;
 
   /// Playlist's tracks
   List<Track> _tracks;
@@ -496,8 +564,12 @@ class Playlist extends Model {
   Playlist(this.uri, this.name, this._tracks, this._lastModified);
 
   factory Playlist.fromMap(Map<String, dynamic> jsonMap) {
-    return Playlist(jsonMap[_JsonKeywords.uri] as String, jsonMap[_JsonKeywords.name],
-        Model.convert(jsonMap[_JsonKeywords.tracks])?.cast<Track>() ?? <Track>[], jsonMap[_JsonKeywords.lastModified]);
+    return Playlist(
+        jsonMap[_JsonKeywords.uri] as String,
+        jsonMap[_JsonKeywords.name],
+        Model.convert(jsonMap[_JsonKeywords.tracks])?.cast<Track>() ??
+            <Track>[],
+        jsonMap[_JsonKeywords.lastModified]);
   }
 
   /// Playlist's tracks
@@ -516,7 +588,9 @@ class Playlist extends Model {
     return _finish({
       _JsonKeywords.uri: uri,
       _JsonKeywords.name: name,
-      _JsonKeywords.tracks: tracks.isNotEmpty ? tracks.map((track) => track.toMap()).toList() : null,
+      _JsonKeywords.tracks: tracks.isNotEmpty
+          ? tracks.map((track) => track.toMap()).toList()
+          : null,
       _JsonKeywords.lastModified: lastModified
     });
   }
@@ -553,18 +627,27 @@ class SearchResult extends Model {
   factory SearchResult.fromMap(Map<String, dynamic> jsonMap) {
     return SearchResult(
         jsonMap[_JsonKeywords.uri] as String,
-        Model.convert(jsonMap[_JsonKeywords.tracks])?.cast<Track>() ?? <Track>[],
-        Model.convert(jsonMap[_JsonKeywords.artists])?.cast<Artist>() ?? <Artist>[],
-        Model.convert(jsonMap[_JsonKeywords.albums])?.cast<Album>() ?? <Album>[]);
+        Model.convert(jsonMap[_JsonKeywords.tracks])?.cast<Track>() ??
+            <Track>[],
+        Model.convert(jsonMap[_JsonKeywords.artists])?.cast<Artist>() ??
+            <Artist>[],
+        Model.convert(jsonMap[_JsonKeywords.albums])?.cast<Album>() ??
+            <Album>[]);
   }
 
   @override
   Map<String, dynamic> toMap() {
     return _finish({
       _JsonKeywords.uri: uri,
-      _JsonKeywords.tracks: tracks.isNotEmpty ? tracks.map((track) => track.toMap()).toList() : null,
-      _JsonKeywords.artists: artists.isNotEmpty ? artists.map((artist) => artist.toMap()).toList() : null,
-      _JsonKeywords.albums: albums.isNotEmpty ? albums.map((album) => album.toMap()).toList() : null
+      _JsonKeywords.tracks: tracks.isNotEmpty
+          ? tracks.map((track) => track.toMap()).toList()
+          : null,
+      _JsonKeywords.artists: artists.isNotEmpty
+          ? artists.map((artist) => artist.toMap()).toList()
+          : null,
+      _JsonKeywords.albums: albums.isNotEmpty
+          ? albums.map((album) => album.toMap()).toList()
+          : null
     });
   }
 
@@ -598,7 +681,10 @@ class Volume extends Model {
   }
 
   @override
-  bool operator ==(Object other) => other is Volume && other.runtimeType == runtimeType && other.volume == volume;
+  bool operator ==(Object other) =>
+      other is Volume &&
+      other.runtimeType == runtimeType &&
+      other.volume == volume;
 
   @override
   int get hashCode => volume.hashCode;
@@ -616,17 +702,22 @@ class PlaybackState extends Model {
   PlaybackState(this.oldState, this.newState);
 
   factory PlaybackState.fromMap(Map<String, dynamic> jsonMap) {
-    return PlaybackState(jsonMap[_JsonKeywords.oldState], jsonMap[_JsonKeywords.newState]);
+    return PlaybackState(
+        jsonMap[_JsonKeywords.oldState], jsonMap[_JsonKeywords.newState]);
   }
 
   @override
   Map<String, dynamic> toMap() {
-    return _finish({_JsonKeywords.oldState: oldState, _JsonKeywords.newState: newState});
+    return _finish(
+        {_JsonKeywords.oldState: oldState, _JsonKeywords.newState: newState});
   }
 
   @override
   bool operator ==(Object other) =>
-      other is PlaybackState && other.runtimeType == runtimeType && other.oldState == oldState && other.newState == newState;
+      other is PlaybackState &&
+      other.runtimeType == runtimeType &&
+      other.oldState == oldState &&
+      other.newState == newState;
 
   @override
   int get hashCode => Object.hash(oldState, newState);

@@ -33,7 +33,7 @@ enum ClientState {
 
 /// Information about the current connection state.
 class ClientStateInfo {
-  /// The current cconnection state.
+  /// The current connection state.
   ClientState state;
 
   /// If reconnection is pending, the delay in milliseconds until the nect reconnection attempt is made.
@@ -74,7 +74,8 @@ abstract class EventManager {
   final emitter = EventEmitter();
 
   /// Calls [listener] whenever the status of the client connection changes.
-  EventCallback addClientStateListener(void Function(ClientStateInfo stateInfo) listener) {
+  EventCallback addClientStateListener(
+      void Function(ClientStateInfo stateInfo) listener) {
     var clientState = {
       "state:online": ClientState.online,
       "state:offline": ClientState.offline,
@@ -83,7 +84,8 @@ abstract class EventManager {
     };
 
     void callback(Event ev, Object? obj) {
-      listener.call(ClientStateInfo(clientState[ev.eventName]!, ev.eventData != null ? ev.eventData as int : 0));
+      listener.call(ClientStateInfo(clientState[ev.eventName]!,
+          ev.eventData != null ? ev.eventData as int : 0));
     }
 
     for (var key in clientState.keys) {
@@ -132,7 +134,8 @@ abstract class EventManager {
   }
 
   /// Calls [listener] whenever playback of a track started, paused, resumed, or ends.
-  EventCallback addTrackPlaybackListener(void Function(TrackPlaybackInfo playbackInfo) listener) {
+  EventCallback addTrackPlaybackListener(
+      void Function(TrackPlaybackInfo playbackInfo) listener) {
     var trackState = {
       "event:trackPlaybackStarted": TrackState.started,
       "event:trackPlaybackPaused": TrackState.paused,
@@ -144,7 +147,8 @@ abstract class EventManager {
       Map<String, dynamic> data = ev.eventData as Map<String, dynamic>;
       TlTrack tltrack = TlTrack.fromMap(data['tl_track']);
       var timePosition = data['time_position'];
-      listener.call(TrackPlaybackInfo(trackState[ev.eventName]!, tltrack, timePosition != null ? timePosition as int : 0));
+      listener.call(TrackPlaybackInfo(trackState[ev.eventName]!, tltrack,
+          timePosition != null ? timePosition as int : 0));
     }
 
     for (var key in trackState.keys) {
@@ -191,8 +195,10 @@ abstract class EventManager {
   }
 
   /// Calls [listener] whenever the currently playing stream title changes.
-  EventCallback addStreamTitleChangedListener(void Function(String title) listener) {
-    return emitter.on("event:streamTitleChanged", null, (Event ev, Object? obj) {
+  EventCallback addStreamTitleChangedListener(
+      void Function(String title) listener) {
+    return emitter.on("event:streamTitleChanged", null,
+        (Event ev, Object? obj) {
       Map<String, dynamic> data = ev.eventData as Map<String, dynamic>;
       var title = data['title'] as String;
       listener.call(title);
@@ -200,8 +206,10 @@ abstract class EventManager {
   }
 
   /// Calls [listener] when the plaback state changed.
-  EventCallback addPlaybackStateChangedListener(void Function(PlaybackState) listener) {
-    return emitter.on("event:playbackStateChanged", null, (Event ev, Object? obj) {
+  EventCallback addPlaybackStateChangedListener(
+      void Function(PlaybackState) listener) {
+    return emitter.on("event:playbackStateChanged", null,
+        (Event ev, Object? obj) {
       Map<String, dynamic> data = ev.eventData as Map<String, dynamic>;
       listener.call(PlaybackState.fromMap(data));
     }).callback;
