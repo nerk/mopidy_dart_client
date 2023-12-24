@@ -36,6 +36,10 @@ class Mopidy extends EventManager {
 
   String _webSocketUrl = defaultWebSocketUrl;
 
+  /// Logger to be used for logging. If [logger] is null,
+  /// a default console logger is used.
+  Logger? logger;
+
   /// The minimum number of milliseconds to wait after a connection error before
   /// we try to reconnect. For every failed attempt, the backoff delay is doubled
   /// until it reaches backoffDelayMax. Defaults to 1000.
@@ -58,8 +62,6 @@ class Mopidy extends EventManager {
   late LibraryController _library;
   late HistoryController _history;
   late PlaylistsController _playlists;
-
-  Logger logger = Logger();
 
   final _clientState$ = PublishSubject<ClientStateInfo>();
   final _optionsChanged$ = PublishSubject<void>();
@@ -93,7 +95,12 @@ class Mopidy extends EventManager {
   bool _stopped = false;
 
   /// Creates a new Modiy client API object.
-  Mopidy({this.backoffDelayMin = 1000, this.backoffDelayMax = 64000}) {
+  Mopidy(
+      {this.logger,
+      this.backoffDelayMin = 1000,
+      this.backoffDelayMax = 64000}) {
+    logger = logger ?? Logger();
+
     _playback = PlaybackController._(this);
     _mixer = MixerController._(this);
     _tracklist = TracklistController._(this);
@@ -225,7 +232,7 @@ class Mopidy extends EventManager {
         }
         connected = await _connect();
       } catch (e) {
-        logger.log(Level.error, e.toString());
+        logger!.log(Level.error, e.toString());
         _event("state", {"reconnectionPending": _currentDelay});
         _event("reconnectionPending", _currentDelay);
 
@@ -329,11 +336,11 @@ class Mopidy extends EventManager {
       } else if (data.containsKey('event')) {
         _handleEvent(data);
       } else {
-        logger.e(
+        logger!.e(
             "Unknown message type received. Message was: ${ev.eventData.toString()}");
       }
     } on FormatException {
-      logger.e(
+      logger!.e(
           "WebSocket message parsing failed. Message was: ${ev.eventData.toString()}");
     }
   }
@@ -341,7 +348,7 @@ class Mopidy extends EventManager {
   void _handleResponse(Map<String, dynamic> responseMessage) {
     final id = responseMessage['id'];
     if (id == null || !_pendingRequests.containsKey(id)) {
-      logger.e("Unexpected response $responseMessage");
+      logger!.e("Unexpected response $responseMessage");
       return;
     }
 
@@ -381,7 +388,7 @@ class Mopidy extends EventManager {
       _event('event', {'eventName': eventName, 'data': data});
       _event(eventName, data);
     } catch (e, s) {
-      logger.e('Error receiving event message', error: e, stackTrace: s);
+      logger!.e('Error receiving event message', error: e, stackTrace: s);
     }
   }
 
