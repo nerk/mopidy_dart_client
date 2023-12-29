@@ -626,7 +626,7 @@ class SearchResult extends Model {
 
   factory SearchResult.fromMap(Map<String, dynamic> jsonMap) {
     return SearchResult(
-        jsonMap[_JsonKeywords.uri] as String,
+        jsonMap[_JsonKeywords.uri],
         Model.convert(jsonMap[_JsonKeywords.tracks])?.cast<Track>() ??
             <Track>[],
         Model.convert(jsonMap[_JsonKeywords.artists])?.cast<Artist>() ??
