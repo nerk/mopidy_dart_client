@@ -77,16 +77,27 @@ class Mopidy extends EventManager {
   final _streamTitleChanged$ = PublishSubject<String>();
 
   Stream<ClientStateInfo> get clientState$ => _clientState$.stream;
+
   Stream<void> get optionsChanged$ => _optionsChanged$.stream;
+
   Stream<void> get playlistsLoaded$ => _playlistsLoaded$.stream;
+
   Stream<Playlist> get playlistChanged$ => _playlistChanged$.stream;
+
   Stream<Uri> get playlistDeleted$ => _playlistDeleted$.stream;
+
   Stream<void> get tracklistChanged$ => _tracklistChanged$.stream;
+
   Stream<TrackPlaybackInfo> get trackPlayback$ => _trackPlayback$.stream;
+
   Stream<PlaybackState> get playbackStateChanged$ => _playbackStateChanged$.stream;
+
   Stream<int> get volumeChanged$ => _volumeChanged$.stream;
+
   Stream<bool> get muteChanged$ => _muteChanged$.stream;
+
   Stream<int> get seeked$ => _seeked$.stream;
+
   Stream<String> get streamTitleChanged$ => _streamTitleChanged$.stream;
 
   get url => _webSocketUrl;
@@ -232,17 +243,17 @@ class Mopidy extends EventManager {
           if (maxRetries < 0) {
             break;
           }
-          _event("state", {"reconnectionPending": _currentDelay});
-          _event("reconnectionPending", _currentDelay);
+        }
+        _event("state", {"reconnectionPending": _currentDelay});
+        _event("reconnectionPending", _currentDelay);
 
-          await Future.delayed(Duration(milliseconds: _currentDelay), () {});
+        await Future.delayed(Duration(milliseconds: _currentDelay), () {});
 
-          _event("state", "reconnecting");
-          _event("reconnecting");
-          _currentDelay *= 2;
-          if (_currentDelay > backoffDelayMax) {
-            _currentDelay = backoffDelayMax;
-          }
+        _event("state", "reconnecting");
+        _event("reconnecting");
+        _currentDelay *= 2;
+        if (_currentDelay > backoffDelayMax) {
+          _currentDelay = backoffDelayMax;
         }
       }
     }
