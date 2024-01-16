@@ -104,6 +104,8 @@ class Mopidy extends EventManager {
 
   bool _stopped = false;
 
+  Timer? timer;
+
   /// Creates a new Modiy client API object.
   Mopidy({this.logger, this.backoffDelayMin = 1000, this.backoffDelayMax = 64000}) {
     logger = logger ?? Logger();
@@ -228,6 +230,11 @@ class Mopidy extends EventManager {
   Future<bool> connect({webSocketUrl, int? maxRetries}) async {
     _webSocketUrl = webSocketUrl ?? _webSocketUrl ?? defaultWebSocketUrl;
 
+    if (timer != null) {
+      timer?.cancel();
+    }
+    _currentDelay = backoffDelayMin;
+
     bool connected = false;
     _stopped = false;
     while (!connected) {
@@ -247,7 +254,7 @@ class Mopidy extends EventManager {
         _event("state", {"reconnectionPending": _currentDelay});
         _event("reconnectionPending", _currentDelay);
 
-        await Future.delayed(Duration(milliseconds: _currentDelay), () {});
+        timer = await _delay(_currentDelay);
 
         _event("state", "reconnecting");
         _event("reconnecting");
@@ -263,11 +270,23 @@ class Mopidy extends EventManager {
 
   /// Disconnects from Mopidy server.
   void disconnect() {
+    if (timer != null) {
+      timer?.cancel();
+    }
     _stopped = true;
     _event("state", "state:offline");
     _event("state:offline");
     _webSocketChannel?.sink.close();
     _currentDelay = backoffDelayMin;
+  }
+
+  Future<Timer> _delay(int milliseconds) async {
+    final completer = Completer();
+    final timer = Timer(Duration(milliseconds: milliseconds), () {
+      completer.complete();
+    });
+    await completer.future;
+    return timer;
   }
 
   void _cleanup(Event ev, Object? obj) {
