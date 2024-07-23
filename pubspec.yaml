@@ -4,24 +4,24 @@ description: Mopidy client
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/nerk/mopidy_dart_client
 
 environment:
   sdk: '>=3.0.0'
 
 dependencies:
-  eventify: ^1.0.0
-  recase: ^4.0.0
-  format: ^1.4.0
+  eventify: ^1.0.1
+  recase: ^4.1.0
+  format: ^1.5.2
   console: ^4.1.0
-  meta: ^1.7.0
-  logger: ^2.0.2
-  rxdart: ^0.27.7
-  web_socket_channel: ^2.4.5
-  collection: ^1.18.0
+  meta: ^1.15.0
+  logger: ^2.4.0
+  rxdart: ^0.28.0
+  web_socket_channel: ^3.0.1
+  collection: ^1.19.0
 
 dev_dependencies:
   lints: ^4.0.0
-  test: ^1.16.0
+  test: ^1.25.8
   
