@@ -15,7 +15,6 @@ dependencies:
   recase: ^4.1.0
   format: ^1.5.2
   console: ^4.1.0
-  meta: ^1.15.0
   logger: ^2.4.0
   rxdart: ^0.28.0
   web_socket_channel: ^3.0.1
